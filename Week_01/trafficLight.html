@@ -1,0 +1,142 @@
+<div id="container">
+  <div id="greenLight"></div>
+  <div id="yellowLight"></div>
+  <div id="redLight"></div>
+  <button id="next">next</button>
+</div>
+
+<style>
+#container {
+  text-align: center;
+}
+#container div {
+  height: 100px;
+  width: 100px;
+  background-color: darkgray;
+  border-radius: 50px;
+  display: inline-block;
+  margin-right: 20px;
+}
+</style>
+
+<script>
+  let gLight = document.getElementById('greenLight')
+  let yLight = document.getElementById('yellowLight')
+  let rLight = document.getElementById('redLight')
+  let container = document.getElementById('container')
+  console.log(container)
+
+  function initColor() {
+    for (let index = 0; index < container.children.length; index++) {
+      const element = container.children[index]
+      element.style.backgroundColor = 'gray'
+    }
+  }
+
+  function green() {
+    initColor()
+    gLight.style.backgroundColor = 'green'
+  }
+
+  function yellow() {
+    initColor()
+    yLight.style.backgroundColor = 'yellow'
+  }
+
+  function red() {
+    initColor()
+    rLight.style.backgroundColor = 'red'
+  }
+
+  function sleep(time) {
+    // resolve 成功调用 -> then， reject 失败调用 -> catch
+    return new Promise((resolve, reject) => {
+      setTimeout(resolve, time)
+    })
+  }
+
+  function go_callback() {
+    gLight.style.backgroundColor = 'green'
+    setTimeout(() => {
+      gLight.style.backgroundColor = 'gray'
+      yLight.style.backgroundColor = 'yellow'
+      setTimeout(() => {
+        yLight.style.backgroundColor = 'gray'
+        rLight.style.backgroundColor = 'red'
+        setTimeout(() => {
+          rLight.style.backgroundColor = 'gray'
+          go()
+        }, 300);
+      }, 200);
+    }, 500);
+  }
+
+  function go_promise() {
+    green();
+    sleep(5000).then((s) => {
+      console.log(s)
+      yellow();
+      return sleep(2000);
+    }).then(() => {
+      red()
+      return sleep(3000)
+    }).then(go)
+  }
+
+  function happen(element, eventName) {
+    return new Promise((resolve, reject) => {
+      element.addEventListener(eventName, resolve, {once: true})
+    })
+  }
+
+  async function go_promise_await() {
+    while (true) {
+      green()
+      await sleep(1000)
+      yellow()
+      await sleep(300)
+      red()
+      await sleep(800)
+    }
+  }
+
+  async function go_happen() {
+    while (true) {
+      green()
+      await happen(document.getElementById('next'), 'click')
+      yellow()
+      await happen(document.getElementById('next'), 'click')
+      red()
+      await happen(document.getElementById('next'), 'click')
+    }
+  }
+
+  function* go_yield() {
+    while (true) {
+      green()
+      yield sleep(1000)
+      yellow()
+      yield sleep(300)
+      red()
+      yield sleep(700)
+    }
+  }
+
+  function run(iterator) {
+    let {value, done} = iterator.next();
+    if (done) return
+    if (value instanceof Promise) {
+      value.then(() => {
+        run(iterator)
+      })
+    } 
+  }
+
+  function co(generator) {
+    return function() {
+      return run(generator())
+    }
+  }
+
+  go = co(go_yield)
+</script>
