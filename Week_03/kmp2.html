@@ -36,9 +36,7 @@ function kmp(source, pattern) {
       if (source[i] === pattern[j]) {
         ++i, ++j;
       } else {
-        // if (j > 0) {
-        //   j = table[j - 1];
-        if (table[j] > 1) {
+        if (j > 0) {
           j = table[j - 1];
         } else {
           ++i;
