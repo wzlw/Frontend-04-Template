@@ -1,0 +1,68 @@
+<div>
+  <p>KMP算法</p>
+  <strong>参考文档：</strong>
+  <strong><a href="http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html" target="_blank">参考一</a></strong>
+  <strong><a href="http://jakeboxer.com/blog/2009/12/13/the-knuth-morris-pratt-algorithm-in-my-own-words/" target="_blank">参考二</a></strong>
+</div>
+<script>
+function kmp(source, pattern) {
+  if (source == pattern || pattern.length == 0) {
+    return 0;
+  }
+  let table = new Array(pattern.length).fill(0)
+
+  {
+    let tmp = '';
+    for (let i = 0; i < pattern.length; i++) {
+      tmp += pattern[i];
+      let prefix = '';
+      let suffix = '';
+      if (tmp.length === 1) continue;
+      for (let j = 0; j < tmp.length; j++) {
+        if (j == 0 || j < tmp.length - 1) {
+          prefix += tmp[j];
+        }
+        suffix = tmp[tmp.length - j - 1] + suffix;
+        if (prefix === suffix) {
+          table[i] = suffix.length;
+        }
+      }
+    }
+    console.log(table)
+  }
+  {
+    let i = 0, j = 0;
+    while (i < source.length) {
+      if (source[i] === pattern[j]) {
+        ++i, ++j;
+      } else {
+        // if (j > 0) {
+        //   j = table[j - 1];
+        if (table[j] > 1) {
+          j = table[j - 1];
+        } else {
+          ++i;
+        }
+      }
+      if (j == pattern.length) {
+        return i - j;// 全匹配，i是目标字符串移动的位数，j是匹配串的长度
+      }
+    }
+  }
+  return -1;
+}
+
+console.log(kmp("abcabababcex", "abababc"))
+console.log(kmp("", "aabaaaca"))
+console.log(kmp("bacbababaabcbab", "abababca"))
+// "mississippi"
+// "issip"
+console.log(kmp("mississippi", "issip"))
+// "bbbbababbbaabbba"
+// "abb"
+console.log(kmp("bbbbababbbaabbba", "abb"))
+console.log(kmp("BBC ABCDAB ABCDABCDABDE", "ABCDABD"))
+
+//BBC ABCDAB ABCDABCDABDE
+//01234567890123456789012
+</script>
