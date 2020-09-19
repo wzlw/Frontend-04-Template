@@ -1,0 +1,57 @@
+<div id="container">
+  文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 
+  文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 
+  文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 
+  文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 
+  文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 
+  文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 
+  文字 文字 文字 文字 文字 文字 文字 文字 文字 文字 文字
+</div>
+<div id="dragable" style="background-color: pink;width: 100px;height: 100px;display: inline-block;"></div>
+<script>
+  let dragable = document.getElementById('dragable');
+  let baseX=1, baseY=1;
+  dragable.addEventListener('mousedown', function (event) {
+    let startX = event.clientX, startY = event.clientY;
+
+    let move = event => {
+      let range = getNearest(event.clientX, event.clientY);
+      range.insertNode(dragable);
+      // dragable.style.transform = `translate(${baseX + event.clientX - startX}px, ${baseY + event.clientY - startY}px)`;
+    }
+
+    let up = event => {
+      baseX += event.clientX - startX, baseY += event.clientY - startY;
+      document.removeEventListener('mousemove', move);
+      document.removeEventListener('mouseup', up);
+    }
+
+    document.addEventListener('mousemove', move);
+    document.addEventListener('mouseup', up)
+  });
+
+  let container = document.getElementById('container');
+  let ranges = [];
+
+  for (let i = 0; i < container.childNodes[0].textContent.length; i++) {
+    let range = document.createRange();
+    range.setStart(container.childNodes[0], i);
+    range.setEnd(container.childNodes[0], i);
+    ranges.push(range);
+  }
+
+  function getNearest(x, y) {
+    let min = Infinity, nearest = null;
+    for (const range of ranges) {
+      let rect = range.getBoundingClientRect();
+      let distance = (rect.x - x) ** 2 + (rect.y - y) ** 2;
+      if (distance < min) {
+        nearest = range;
+        min = distance;
+      }
+    }
+    return nearest;
+  }
+
+  document.addEventListener('selectstart', event => event.preventDefault())
+</script>

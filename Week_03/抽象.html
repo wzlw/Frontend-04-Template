@@ -1,0 +1,43 @@
+<script>
+  let cat = {
+    say() {
+      console.log('meow~')
+    },
+    jump() {
+      console.log('jump')
+    }
+  }
+  let tiger = Object.create(cat, {
+    say: {
+      writable: true,
+      configurable: true,
+      enumerable: true,
+      value: function () {
+        console.log('roar!')
+      }
+    }
+  })
+
+
+  class Animal {
+    constructor(name) {
+      this.name = name;
+    }
+    speak() {
+      console.log(this.name + " make a noise");
+    }
+  }
+
+  class Dog extends Animal {
+    constructor(name) {
+      super(name)
+    }
+
+    speak() {
+      console.log(this.name + " barks");
+    }
+  }
+
+  let dog = new Dog("mm");
+  dog.speak()
+</script>
