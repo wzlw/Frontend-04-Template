@@ -5,13 +5,12 @@ http.createServer((request, response) => {
   request.on('error', (error) => {
     console.log(error);
   }).on('data', (chunk) => {
-    console.log(chunk)
-    body.push(chunk.toString());
+    body.push(chunk);
   }).on('end', () => {
     body = Buffer.concat(body).toString();
     console.log(body);
     response.writeHead(200, {'Content-type': 'text/html'})
-    response.end('hello world \n');
+    response.end(`hello world`);
   })
 }).listen(8081);
 

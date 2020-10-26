@@ -26,7 +26,6 @@ class Request {
           host: this.host,
           port: this.port
         }, () => {
-          console.log(this.toString());
           connection.write(this.toString());
         })
       }
@@ -45,23 +44,40 @@ class Request {
     });
   }
   toString() {
-    return `${this.method} ${this.path} HTTP/1.1 \r
-${Object.keys(this.headers).map(key => `${key}: ${this.headers[key]}`).join('\r\n')}\r\n
-\r
-${this.bodyText}`;
+    // 注意请求头格式，拼错会造成请求失败
+    return `${this.method} ${this.path} HTTP/1.1\r\n${
+      Object.keys(this.headers).map(key => `${key}: ${this.headers[key]}`).join('\r\n')}
+      \r\n\r\n${this.bodyText}`;
   }
 }
 
 class ResponseParser {
   constructor() {
-    this.WAITTING_STATUS_LINE = 0;
-    this.WAITTING_STATUS_LINE_END = 1;
-    this.WAITTING_HEADER_NAME = 2;
-    this.WAITTING_HEADER_SPACE = 3;
-    this.WAITTING_HEADER_VALUE = 4;
-    this.WAITTING_HEADER_LINE_END = 5;
-    this.WAITTING_HEADER_BLOCK_END = 6;
-    this.WAITTING_BODY = 7;
+    // HTTP/1.1 200 OK\r\n
+    this.WAITTING_STATUS_LINE = 0;// 状态行
+    this.WAITTING_STATUS_LINE_END = 1;// 状态行结束
+
+    // response头
+    /* 
+      Content-type: text/html\r\n
+      Date: Mon, 12 Oct 2020 15:19:56 GMT\r\n
+      Connection: keep-alive\r\n
+      Transfer-Encoding: chunked\r\n
+    */
+    this.WAITTING_HEADER_NAME = 2;// key Content-type
+    this.WAITTING_HEADER_SPACE = 3;// 空格
+    this.WAITTING_HEADER_VALUE = 4;// value
+    this.WAITTING_HEADER_LINE_END = 5;// 一行结束
+    this.WAITTING_HEADER_BLOCK_END = 6;// 整个response头结束
+
+    // body
+    /* 
+      d 数据长度(十六进制)
+      hello world 返回的内容
+    
+      0 结束
+    */
+    this.WAITTING_BODY = 7;// body
 
     this.current = this.WAITTING_STATUS_LINE;
     this.statusLine = "";
@@ -75,7 +91,7 @@ class ResponseParser {
     return this.bodyParser && this.bodyParser.isFinished;
   }
   get response() {
-    this.statusLine.match(/HTTP\/1.1 ([0-9]+) ([\s\S])+/)
+    this.statusLine.match(/HTTP\/1.1 ([0-9]+) ([\s\S]+)/)
     return {
       statusCode: RegExp.$1,
       statusText: RegExp.$2,
@@ -91,11 +107,11 @@ class ResponseParser {
   reciveChar(char) {
     if(this.current === this.WAITTING_STATUS_LINE) {
       if(char === '\r') {
-        this.current = this.WAITTING_HEADER_LINE_END;
+        this.current = this.WAITTING_STATUS_LINE_END;
       } else {
         this.statusLine += char;
       }
-    } else if (this.current === this.WAITTING_HEADER_BLOCK_END) {
+    } else if (this.current === this.WAITTING_STATUS_LINE_END) {
       if(char === '\n') {
         this.current = this.WAITTING_HEADER_NAME;
       }
@@ -104,7 +120,7 @@ class ResponseParser {
         this.current = this.WAITTING_HEADER_SPACE;
       } else if (char === '\r') {
         this.current = this.WAITTING_HEADER_BLOCK_END;
-        if (this.headers['Transfer-Encoding'] === 'chunk') {
+        if (this.headers['Transfer-Encoding'] === 'chunked') {
           this.bodyParser = new TrunkedBodyParser();
         }
       } else {
@@ -132,7 +148,6 @@ class ResponseParser {
         this.current = this.WAITTING_BODY;
       }
     } else if (this.current === this.WAITTING_BODY) {
-      console.log(char)
       this.bodyParser.receiveChar(char);
     }
   }
@@ -140,11 +155,11 @@ class ResponseParser {
 
 class TrunkedBodyParser{
   constructor() {
-    this.WAITTING_LENGTH = 0;
-    this.WAITTING_LENGTH_LINE_END = 1;
-    this.READING_TRUNK = 2;
-    this.WAITTING_NEW_LINE = 3;
-    this.WAITTING_NEW_LINE_END = 4;
+    this.WAITTING_LENGTH = 0;// body长度
+    this.WAITTING_LENGTH_LINE_END = 1;// body长度行结束
+    this.READING_TRUNK = 2;// body内容
+    this.WAITTING_NEW_LINE = 3;// 新行
+    this.WAITTING_NEW_LINE_END = 4;// 新行结束
     this.length = 0;
     this.content = [];
     this.isFinished = false;
@@ -162,7 +177,7 @@ class TrunkedBodyParser{
         this.length *= 16;
         this.length += parseInt(char, 16);
       }
-    } else if (this.current = this.WAITTING_LENGTH_LINE_END) {
+    } else if (this.current === this.WAITTING_LENGTH_LINE_END) {
       if (char === '\n') {
         this.current = this.READING_TRUNK;
       }
@@ -197,7 +212,8 @@ void async function() {
       name: 'zhangsan'
     }
   });
-  let response = request.send();
-  console.log(response);
+  let response = await request.send();
+  console.log(111, response);
+  // parser.parseHtml(response.body)
 }();
 
