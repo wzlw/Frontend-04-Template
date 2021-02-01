@@ -1,0 +1,22 @@
+<script>
+  // 字符串普通匹配算法
+  function normal(source, pattern) {
+    let target = '';
+    if (pattern.length == 0 || pattern == source) {
+      return 0;
+    }
+    for (let i = 0; i <= source.length - pattern.length; i++) {
+      target = '';
+      for (let j = 0; j < pattern.length; j++) {
+        target += source[i+j]
+      }
+      if (target == pattern) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  console.log(normal("mississippi", "pi"))
+
+</script>

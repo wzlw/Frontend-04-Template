@@ -1,0 +1,120 @@
+@media print {
+  @page {
+    size: portrait;
+    @top-left {
+      content: 'Hamlet';
+    }
+  }
+}
+
+@counter-style triangle {
+  system: cyclic;
+  symbols: ➡️;
+  suffix: " ";
+}
+
+.cls-kf {
+  width: 100px;
+  height: 100px;
+  background-color: aquamarine;
+  animation-duration: 3s;
+  animation-name: slidein;
+}
+
+@keyframes slidein {
+  from {
+    margin-left: -100px;
+    width: 0px;
+  }
+  to {
+    margin-left: 0px;
+    width: 100px;
+  }
+}
+
+@font-face {
+  font-family: 'iconfont';  /* project id 446789 */
+  src: url('https://at.alicdn.com/t/font_446789_h92kxi0tlk6.eot');
+  src: url('https://at.alicdn.com/t/font_446789_h92kxi0tlk6.eot?#iefix') format('embedded-opentype'),
+  url('https://at.alicdn.com/t/font_446789_h92kxi0tlk6.woff2') format('woff2'),
+  url('https://at.alicdn.com/t/font_446789_h92kxi0tlk6.woff') format('woff'),
+  url('https://at.alicdn.com/t/font_446789_h92kxi0tlk6.ttf') format('truetype'),
+  url('https://at.alicdn.com/t/font_446789_h92kxi0tlk6.svg#iconfont') format('svg');
+}
+
+h1 {
+  color: red;
+  font-family: "iconfont" !important;
+}
+
+/* 复合选择器 */
+/* 交集 */
+a.cls {
+  color: aqua;
+}
+
+/* 并集 */
+div,.cls {
+  color: blue;
+}
+
+/* 后代选择器 */
+div span {
+  color: red;
+}
+
+/* 子元素选择器 */
+div > span {
+  color: brown;
+}
+ul {
+  /* list-style: triangle; */
+  list-style-type: toggle(cyclic, square);
+}
+ul > li {
+  color: chocolate;
+}
+
+/* 后代选择器会作用到所有的层级，而子元素选择器只会作用到它所包含的一个层级 */
+
+
+/* 相邻选择器 会给+号后面的那个选择器设置上样式*/
+.sibling1+.sibling2 {
+  background-color: aqua;
+}
+
+p + div {
+  background-color: aquamarine;
+}
+
+/* 属性选择器 */
+div[class="cls"] {
+  background-color: blue;
+  color: aliceblue;
+}
+
+a:visited, a:link{
+  color: orange;
+}
+
+a:hover {
+  color: rebeccapurple;
+  text-decoration: none;
+}
+
+/* 计算值 */
+.cls-calc {
+  background-color: blueviolet;
+  height: 50px;
+  margin-top: 10px;
+  width: calc(100% - 30%);
+}
+
+.cls-tf {
+  width: 50px;
+  height: 50px;
+  transform: rotate(30deg);
+  background-color: blue;
+}
+
+

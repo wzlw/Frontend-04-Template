@@ -1,0 +1,31 @@
+<div class="parent">
+  <div class="c1">child1</div>
+  <div class="c2">child2</div>
+  <div class="c3">child3</div>
+  <div class="c4">child4</div>
+</div>
+
+<style>
+.parent {
+  color: chocolate;
+}
+.c1 {
+  color: inherit;
+}
+.c2 {
+  color: initial;
+}
+.c3 {
+  color: unset;
+}
+.c4 {
+  color: revert;
+}
+</style>
+
+
+
+<h3 style="font-weight: unset; color: unset;">This will still have font-weight: normal, but color: black</h3>
+<p>Just some text</p>
+<h3 style="font-weight: revert; color: revert;">This should have its original font-weight (bold) and color: black</h3>
+<p>Just some text</p>

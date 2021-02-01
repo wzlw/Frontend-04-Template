@@ -1,0 +1,28 @@
+<div id="outer" style="background-color: aqua;height: 300px;">
+  <div id="inner" style="background-color: burlywood; height: 200px;"></div>
+</div>
+<script>
+  let outer = document.getElementById('outer')
+  let inner = document.getElementById("inner")
+  // 默认冒泡
+  outer.addEventListener("click", (e) => {
+    console.log('outer')
+  })
+  inner.addEventListener('click', (e) => {
+    console.log('inner')
+  })
+  // 捕获
+  outer.addEventListener("click", (e) => {
+    console.log('catch outer')
+  }, true)
+  inner.addEventListener("click", (e) => {
+    console.log("catch inner")
+  }, true)
+  // options 参数
+  outer.addEventListener("click", (e) => {
+    console.log('options catch outer')
+  }, {capture: true})
+  inner.addEventListener("click", (e) => {
+    console.log("options catch inner")
+  }, {capture: true})
+</script>

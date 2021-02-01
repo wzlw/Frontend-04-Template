@@ -1,0 +1,12 @@
+<div></div>
+<script>
+  let arr = [[1,2,3], [4,5,6], [7,8,9], 10]
+  let cArr = Object.create(arr)
+  console.log(cArr)
+  cArr[3] = 20
+  console.log(arr)
+  console.log(cArr)
+  cArr[0][1] = 8
+  console.log(arr)
+  console.log(cArr)
+</script>

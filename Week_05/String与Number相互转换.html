@@ -1,0 +1,21 @@
+<script>
+  function string2number(str) {
+    const reg_10 = /^[0-9][0-9]*[\\.]{0,1}[0-9]*$/g;
+    const reg_16 = /^0[x,X]{1}[0-9A-Fa-f]*$/g;
+    const reg_8 = /^0[o,O]{1}[0-7]*$/g;
+    const reg_2 = /^0[b,B]{1}[0-1]*$/g;
+    for (const reg of [reg_10, reg_16, reg_2, reg_8]) {
+      let match = str.match(reg)
+      if (match.length > 0) {
+        return + match[0]
+      }
+    }
+    return NaN
+  }
+
+  function number2string(num, radix) {
+    if (isNaN(num)) return
+    if (!(radix === 2 || radix === 8 || radix === 16 || radix === 10)) return
+    return num.toString(radix)
+  }
+</script>

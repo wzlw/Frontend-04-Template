@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<div id="a">
+  <div>1</div>
+  <div>2</div>
+  <span>3</span>
+  <div>4</div>
+  <span>5</span>
+</div>
+
+<div>
+  <p>First paragraph.</p>
+  <p>Second paragraph.</p>
+  <p>Third paragraph.</p>
+  <p>Fourth paragraph.</p>
+</div>
+
+<script>
+
+  // living Collection
+  let el = document.getElementById("a")
+  
+  // function reverseChildNodes(el) {
+  //   let l = el.children.length
+  //   while (l -- > 0) {
+  //     el.appendChild(el.children[l])
+  //   }
+  // }
+
+  // reverseChildNodes(el)
+
+  function reverseElement(el) {
+    let range = new Range();
+    range.selectNodeContents(el);
+
+    let fragment = range.extractContents();
+    let l = fragment.childNodes.length;
+
+    while (l-- > 0) {
+      fragment.appendChild(fragment.childNodes[l])
+    }
+
+    el.appendChild(fragment);
+
+  }
+
+
+
+
+// const paragraphs = document.querySelectorAll('p');
+
+// // 创建 Range 对象
+// const range = new Range();
+
+// // Range 起始位置在段落2
+// range.setStartBefore(paragraphs[1]);
+
+// // Range 结束位置在段落3
+// range.setEndAfter(paragraphs[2]);
+
+// // 获取 selection 对象
+// const selection = window.getSelection();
+
+// // 添加光标选择的范围
+// selection.addRange(range);
+
+</script>

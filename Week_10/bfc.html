@@ -1,0 +1,44 @@
+<div class="outer">
+  <div class="inner">
+    我是内部元素
+  </div>
+  我是一段文字，我是一段文字，我是一段文字，我是一段文字，
+  我是一段文字，我是一段文字，我是一段文字，我是一段文字，
+  <!-- 我是一段文字，我是一段文字，我是一段文字，我是一段文字，
+  我是一段文字，我是一段文字，我是一段文字，我是一段文字，
+  我是一段文字，我是一段文字，我是一段文字，我是一段文字，
+  我是一段文字，我是一段文字，我是一段文字，我是一段文字，
+  我是一段文字，我是一段文字，我是一段文字，我是一段文字，
+  我是一段文字，我是一段文字，我是一段文字，我是一段文字 -->
+</div>
+<style>
+.outer {
+  width: 500px;
+  border: 5px solid red;
+  padding: 10px;
+  }
+/* .outer::after, .group::before {
+  content: 'a';
+  display: table;
+}
+
+.outer::after {
+  clear: both;
+} */
+.outer::after {
+  visibility: hidden;
+  display: block;
+  content: "aaa";
+  clear: both;
+  height: 0;
+}
+
+ .inner {
+  background-color: pink;
+  border: 3px solid blue;
+  color: white;
+  float: left;
+  width: 300px;
+  height: 200px;
+  }
+</style>

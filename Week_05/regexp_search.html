@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .found {
+      background-color: #ff0;
+    }
+    body {
+      text-align: center;
+      margin: 10px;
+      width: 100%;
+    }
+    #searchString {
+      text-align: left;
+    }
+    #searchResult pre{
+      width: 100%;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <form id="textsearch">
+    <textarea id="incoming" cols="150" rows="10"></textarea>
+    <p>
+      Search pattern: <input id="pattern" type="text">
+    </p>
+  </form>
+  <button id="searchSubmit">Search for pattern</button>
+  <div id="searchResult"></div>
+  <script>
+    document.getElementById('searchSubmit').onclick = function() {
+      let pattern = document.getElementById('pattern').value;
+      let searchString = document.getElementById('incoming').value;
+      if (pattern.length === 0) {
+        document.getElementById('searchResult').textContent = searchString;
+        return
+      }
+      let re = new RegExp(pattern, 'g');
+
+      // 方法一
+      // let matchArray;
+      // let resultString = "<pre>";
+      // let first = 0;// 截取子串开始的位置
+      // let last = 0;// 截取子串结束的位置
+      // while ((matchArray = re.exec(searchString)) != null) {
+      //   last = matchArray.index;// 匹配开始的位置
+      //   resultString += searchString.substring(first, last);
+      //   resultString += "<span class='found'>" + matchArray[0] + "</span>";
+      //   first = re.lastIndex;//匹配结束的位置
+      // }
+      // resultString += searchString.substring(first, searchString.length);
+      // resultString += "</pre>";
+
+      // 方法二
+      resultString = searchString.replace(re, "<span class='found'>$&</span>")
+
+      document.getElementById("searchResult").innerHTML = resultString;
+    }
+
+    // 匹配的字符串交换
+    let name = "Abe Lincoln";
+    let re = /^(\w+)\s(\w+)$/g
+    console.log(name.replace(re, "$2, $1"))
+
+    let pieceOfHtml = "<p>This is a <span>paragrah</span></p>";
+    pieceOfHtml = pieceOfHtml.replace(/</g, "&lt;")
+    pieceOfHtml = pieceOfHtml.replace(/>/g, "&gt;")
+    console.log(pieceOfHtml)
+  </script>
+</body>
+</html>

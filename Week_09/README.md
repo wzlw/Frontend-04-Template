@@ -89,6 +89,7 @@
 * rule
 
   * Selector
+
     * selector_group
     * selector
       * `>`
@@ -106,11 +107,61 @@
         * 
       * `::`：伪元素
       * `:not()`：反选伪类
+
   * Declaration
+
     * key
+
       * variables
+
+        ```css
+        :root {
+          --main-color: #06c;
+          --accent-color: #006;
+        }
+        /* The rest of the CSS file */
+        #foo h1 {
+          color: var(--main-color);
+        }
+        ```
+
       * properties
+
+        * css范围的关键字：initial unset 
+        * 字符串: content
+        * URL: url()
+        * 整数/实数: flex
+        * 维度: width
+        * 百分比: 100%
+        * 颜色: background-color
+        * 图片: background-image
+        * 2D位置: background-position
+        * 函数: tranform
+
     * value
-      * calc
+
+      * calc:基本的表达式计算，支持加减乘除
+
+        ```css
+        section {
+          float: left;
+          margin: 1em; border: solid 1px;
+          width: calc(100%/3 - 2*1em - 2*1px);
+        }
+        ```
+
+      * max: 比较两个数中较大的一个
+
+      * min：比较两个数中较小的一个
+
+      * clamp：给一个值限定一个范围，超出范围外则使用范围的最大值或最小值
+
+      * toggle：在规则中选中多于一个元素时生效，它会在几个值之间来回切换
+
+        ```css
+        ul { list-style-type: toggle(circle, square); }
+        ```
+
       * number
+
       * length

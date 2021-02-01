@@ -1,0 +1,21 @@
+
+<h3 style="font-weight: unset; color: unset;">This will still have font-weight: normal, but color: black</h3>
+<p>Just some text</p>
+<h3 style="font-weight: revert; color: revert;">This should have its original font-weight (bold) and color: black</h3>
+<p>Just some text</p>
+<h3 style="color:unset;">Just some text</h3>
+
+<div class="test">
+  <h3 style="color: unset;">Just some text 1</h3>
+  <h3 style="color: revert;">Just some text 2</h3>
+</div>
+
+<style>
+  h3 {
+    font-weight: normal;
+    color: blue;
+  }
+  .test {
+    color: red;
+  }
+</style>

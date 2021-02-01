@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style type="text/css">
+    body {
+      max-width: 900px;
+      width: 90%;
+      margin: 2em auto;
+      font: .9em/1.2 Arial, Helvetica, sans-serif;
+    }
+    .container {
+      display: grid;
+      /* grid-template-columns: 2fr 1fr 1fr; */
+      /* grid-template-columns: repeat(3, 1fr); */
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px 20px;
+      background-color: chocolate;
+      grid-auto-rows: minmax(100px, auto);
+    }
+    .container > div {
+      padding: 10px;
+      border-radius: 5px;
+      border: 2px solid steelblue;
+      background-color: aquamarine;
+    }
+  </style>
+</head>
+<body>
+  <h1>Simple grid example</h1>
+  <div class="container">
+    <div>One</div>
+    <div>Two</div>
+    <div>Three</div>
+    <div>Four</div>
+    <div>Five</div>
+    <div>Six</div>
+    <div>Seven</div>
+  </div>
+</body>
+</html>

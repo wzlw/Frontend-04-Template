@@ -1,0 +1,13 @@
+<style>
+  .x::before {
+    content: "额外 额外 额外 额外 额外";
+    background-color: aqua;
+  }
+</style>
+<div style="width: 100px;height: 400px;overflow: scroll;">
+  文字<span class="x" style="background-color: aquamarine;">文字 文字 文字 文字 文字 文字</span>
+</div>
+
+<script>
+  let x = document.getElementsByClassName("x")[0]
+</script>

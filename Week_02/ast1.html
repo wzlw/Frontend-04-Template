@@ -1,0 +1,165 @@
+<script>
+  let regexp = /([0-9\.]+)|([ \t]+)|([\r\n]+)|(\*)|(\/)|(\+)|(\-)|([(])|([)])/g;
+  let dictionary = ['Number', 'Whitespace', 'LineTerminator', '*', '/', '+', '-', 'LB', 'RB'];
+
+  // function tokenize(source) {
+  //   let result = null;
+  //   while (true) {
+  //     result = regexp.exec(source);
+  //     if (!result) break;
+  //     for (let i = 0; i <= dictionary.length; i++) {
+  //       if (result[i]){
+  //         console.log(dictionary[i-1]);
+  //       }
+  //     } 
+  //     console.log(result)
+  //   }
+  // }
+
+  function* tokenize(source) {
+    let result = null;
+    let lastIndex = 0;
+    while (true) {
+      lastIndex = regexp.lastIndex;
+      result = regexp.exec(source);
+      if (!result) break;
+      console.log(regexp.lastIndex, lastIndex, result[0].length)
+      if (regexp.lastIndex - lastIndex > result[0].length) break;// 判断是否跳过了匹配？
+      let token = {
+        type: null,
+        value: null
+      };
+      for (let i = 0; i <= dictionary.length; i++) {
+        if (result[i]){
+          token.type = dictionary[i-1];
+        }
+      } 
+      token.value = result[0];
+      yield token
+    }
+    yield {type: 'EOF'};
+  }
+
+  let source = [];
+  // for (const item of tokenize("3 + ( 4 * 2 )")) {
+  for (const item of tokenize("(2 + 4) + 1 + ( 5 * 2 )")) {
+    if (item.type != 'Whitespace' && item.type != 'LineTerminator')
+      source.push(item)
+  }
+  console.log(source)
+
+  function bracket(source) {
+    if (source[0].type == 'LB') {
+      source.shift()
+      additiveExpression(source)
+      return bracket(source)
+    }
+    if (source[0].type == 'AdditiveExpression' && source[1] && source[1].type == 'LB') {
+      source.splice(1, 1)
+      additiveExpression(source)
+      return bracket(source)
+    }
+    if (source[0].type == 'AdditiveExpression' && source[1] && source[1].type == 'RB') {
+      // console.log(source)
+      let node = {
+        type: 'Bracket',
+        children: [source[0]]
+      }
+      source.splice(1, 1)
+      source[0] = node
+      additiveExpression(source)
+      return bracket(source)
+    }
+    if (source[0].type == 'Bracket') {
+      return source[0]
+    }
+    additiveExpression(source)
+    return bracket(source)
+  }
+
+  // 四则运算规则先乘除后加减，所以加减里面会包含优先级更高的乘除运算结果
+  function expression(source) {
+    if (source[0].type == 'AdditiveExpression' && source[1] && source[1].type == 'EOF') {
+      let node = {
+        type: 'Expression',
+        children: [source.shift(), source.shift()]
+      }
+      source.unshift(node)
+      return node
+    }
+    if (source[0].type == 'LB') {
+      bracket(source)
+      console.log(source)
+      additiveExpression(source)
+      return expression(source)
+    }
+    additiveExpression(source)
+    return expression(source)
+  }
+
+  function additiveExpression(source) {
+    if (source[0].type == 'MultiplicativeExpression') {
+      let node = {
+        type: 'AdditiveExpression',
+        children: [source[0]]
+      }
+      source[0] = node
+      return additiveExpression(source)
+    }
+    if (source[0].type == 'AdditiveExpression' && source[1] && (source[1].type == '+' || source[1].type == '-')) {
+      let node = {
+        type: 'AdditiveExpression',
+        operator: source[0].type,
+        children: []
+      }
+      node.children.push(source.shift())// +左边
+      node.children.push(source.shift())// +
+      if (source[0].type == 'LB') {
+        bracket(source)
+      } else {
+        multiplicativeExpression(source) // +右边是否有乘除, 有，则先运算乘除 ps:结果会追加到列表头部
+      }
+      node.children.push(source.shift())// + 右边 有乘除则会追加乘除的ast
+      source.unshift(node)
+      return additiveExpression(source);
+    }
+    if (source[0].type == 'AdditiveExpression')
+      return source[0]
+    multiplicativeExpression(source)
+    return additiveExpression(source)
+  }
+
+  function multiplicativeExpression(source) {
+    if (source[0].type == 'Number') {
+      let node = {
+        type: 'MultiplicativeExpression',
+        children: [source[0]]
+      };
+      source[0] = node;
+      return multiplicativeExpression(source)
+    }
+    if (source[0].type == 'MultiplicativeExpression' && source[1] && (source[1].type == '*' || source[1].type == '/')) {
+      let node = {
+        type: 'MultiplicativeExpression',
+        operator: source[1].type,
+        children: []
+      }
+      // 与乘号(除号)相连的两个数字加上乘号(除号)，总共需要从数组头中推出三个元素
+      node.children.push(source.shift())// *(/)左边
+      node.children.push(source.shift())// *(/)
+      node.children.push(source.shift())// *(/)右边
+      // 把结果追加到数组头部
+      source.unshift(node)
+      return multiplicativeExpression(source)
+    }
+    if (source[0].type == 'MultiplicativeExpression')// 数组中再无乘号和除号
+      return source[0]
+    return multiplicativeExpression(source)
+  }
+
+  // let result = multiplicativeExpression(source)
+  // let result = additiveExpression(source)
+  let result = expression(source)
+  console.log(result)
+  
+</script>
